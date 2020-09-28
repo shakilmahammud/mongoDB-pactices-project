@@ -25,13 +25,12 @@ client.connect(err => {
     collection.insertOne(product)
     .then(result=>{
       console.log('hoice');
-      res.send('done')
+      res.redirect('/')
     })  
   })
   app.get('/product',(req,res)=>{
     collection.find({})
     .toArray((err,document)=>{
-      console.log(document);
       res.send(document);
     })
   })
@@ -44,17 +43,19 @@ client.connect(err => {
   })
   //update
   app.patch('/update/:id',(req,res)=>{
-    collection.updateOne({_id:ObjectId(req.params.id)}),
-    {$set:{price:req.body.price,quantity:req.body.quantity}}
+    collection
+    .updateOne(
+      {_id:ObjectId(req.params.id)},
+    {$set:{price:req.body.price,quantity:req.body.quantity}})
     .then(result=>{
-      console.log(result);
+      res.send(result.matchedCount > 0)
     })
   })
 //delete
 app.delete('/delete/:id',(req,res)=>{
   collection.deleteOne({_id: objectId(req.params.id)})
  .then(result=>{
-  console.log(result);
+  res.send(result.deletedCount > 0);
  })
 })
   // const data={name:'shakil',id:2}

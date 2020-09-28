@@ -21,11 +21,12 @@
         .then(res=>res.json())
         .then(product=>{
             const container= document.getElementById('product');
+            container.innerHTML=''
            product.forEach(pd=>{
                const p=document.createElement('p');
                p.innerHTML=`<strong>${pd.name}</strong><span>-${pd.quantity}-:${pd.price}</span>
                <button onclick=loadproduct('${pd._id}')>Update</button>
-              <button onclick=deleteProduct("${pd._id}")>delete</button>
+              <button onclick=deleteProduct(event,"${pd._id}")>delete</button>
                `
                container.appendChild(p);
         })
@@ -33,13 +34,15 @@
         }
         loadProducts();
 
-        function deleteProduct(id){
+        function deleteProduct(event,id){
             fetch(`/delete/${id}`,{
                 method:'DELETE'
             })
             .then(res=>res.json())
             .then(result=>{
-                console.log('detele done');
+                if(result){
+                    event.target.parentNode.style.display='none';
+                }
             })
         }
         function loadproduct(id){
@@ -56,7 +59,7 @@
             <button onclick=updateProduct('${data._id}')> Update data </button>
                 `
         })
-        }
+    }
         function updateProduct(id){
             const price=document.getElementById('price').value;
             const quantity=document.getElementById('quantity').value;
@@ -70,7 +73,11 @@
             })
             .then(res=>res.json())
             .then(data=>{
-                console.log('detele done');
+               if(data){
+                loadProducts();
+                const update=document.getElementById('update');
+                update.innerHTML='';
+               }
             })
         }
     </script>
